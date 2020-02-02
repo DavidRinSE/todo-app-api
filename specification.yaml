@@ -1,0 +1,391 @@
+openapi: 3.0.1
+info:
+  title: Sproosed API
+  version: "1.0.0"
+servers:
+  - url: http://localhost:3000/api
+    description: localhost
+  - url: https://vast-spire-30392.herokuapp.com/api
+    description: Production Server
+    variables:
+      domain:
+        default: localhost:3001
+        description: Domain
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    board:
+      type: object
+      additionalProperties: false
+      properties:
+        board:
+          type: object
+          properties:
+            name: 
+              type: string
+              example: "Board Name"
+            id: 
+              type: integer
+              example: 0
+            tasks:
+              type: array
+              items:
+                type: object
+        statusCode: 
+          type: integer
+          example: 200
+    boards:
+      type: object
+      properties:
+        boards:
+          type: array
+          items:
+            type: object
+            properties:
+              name: 
+                type: string
+                example: "Board Name"
+              id: 
+                type: integer
+                example: 0
+              tasks:
+                type: array
+                items:
+                  type: object
+        statusCode: 
+          type: integer
+          example: 200
+    tasks:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            type: object
+            properties:
+              name: 
+                type: string
+                example: "Task Name"
+              id: 
+                type: integer
+                example: 0
+              boardID:
+                type: integer
+                example: 0
+        statusCode: 
+          type: integer
+          example: 200
+    task:
+      type: object
+      additionalProperties: false
+      properties:
+        task:
+          type: object
+          properties:
+            name: 
+              type: string
+              example: "Task Name"
+            id: 
+              type: integer
+              example: 0
+            boardID:
+              type: integer
+              example: 0
+        statusCode: 
+          type: integer
+          example: 200
+  responses:
+    UnauthorizedError:
+      description:  Unauthorized-  Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: string
+            example: "Get off my lawn kid! You don't belong here."
+    badRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              statusCode:
+                type: integer
+                example: 0
+    getBoard:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/board'
+    getBoards:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/boards'
+    getTask:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/task'
+    getTasks:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/tasks'
+    teapot:
+      description: I'm a teapot
+      content:
+        application/json:
+          schema:
+            type: string
+            example: "I'm a teapot"
+paths: 
+  /api/auth/login:
+    post:
+      summary: Login User
+      tags: 
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                  username:
+                    type: string
+                    minLength: 3
+                    maxLength: 20
+                  password:
+                    type: string
+                    minLength: 3
+                    maxLength: 20
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  token:
+                    type: string
+                  statusCode:
+                    type: integer
+                    example: 0
+        400:
+          $ref: '#/components/responses/badRequest'
+        418:
+          $ref: '#/components/responses/teapot'
+  /api/auth/logout:
+    post:
+      security:
+        - beraerAuth: []
+      summary: Logout a user
+      tags:
+        - Auth
+      responses:
+        200:
+          description: OK
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 0
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/board:
+    post:
+      security:
+        - beraerAuth: []
+      summary: Create a new board
+      tags:
+        - Boards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              example: "New board name"
+      responses:
+        200:
+          $ref: '#/components/responses/getBoard'
+        400:
+          $ref: '#/components/responses/badRequest'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      tags:
+        - Boards
+      summary: Get a specific board
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          $ref: '#/components/responses/getBoard'
+        400:
+          $ref: '#/components/responses/badRequest'
+    patch:
+      security:
+        - beraerAuth: []
+      tags:
+        - Boards
+      summary: Update a specific board name
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              example: "New board name"
+      responses:
+        200:
+          $ref: '#/components/responses/getBoard'
+        400:
+          $ref: '#/components/responses/badRequest'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/boards:
+    get:
+      tags:
+        - Boards
+      summary: Get all boards
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            example: 100
+        - in: query
+          name: shift
+          schema:
+            type: integer
+      responses:
+        200:
+          $ref: '#/components/responses/getBoards'
+        400:
+          $ref: '#/components/responses/badRequest'
+  /api/task:
+    post:
+      security:
+        - beraerAuth: []
+      summary: Create a new task
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "New Task Name"
+                boardID:
+                  type: integer
+                  example: 0
+      responses:
+        200:
+          $ref: '#/components/responses/getTask'
+        400:
+          $ref: '#/components/responses/badRequest'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    get:
+      tags:
+        - Tasks
+      summary: Get a specific task
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          $ref: '#/components/responses/getTask'
+        400:
+          $ref: '#/components/responses/badRequest'
+    patch:
+      security:
+        - beraerAuth: []
+      tags:
+        - Tasks
+      summary: Update a specific task
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "New name"
+                boardID:
+                  type: integer
+                  example: 1
+      responses:
+        200:
+          $ref: '#/components/responses/getTask'
+        400:
+          $ref: '#/components/responses/badRequest'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Get a list of tasks
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            example: 100
+        - in: query
+          name: shift
+          schema:
+            type: integer
+        - in: query
+          name: boardID
+          schema:
+            type: integer
+      responses:
+        200:
+          $ref: '#/components/responses/getTasks'
+        400:
+          $ref: '#/components/responses/badRequest'
