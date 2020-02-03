@@ -1,0 +1,3 @@
+users: id (serial, not null, integer), username (not null, string), email (not null, string, email format), password(not null, string)
+boards: id (serial, not null, integer), username (not null, string), name (not null, string)
+tasks: id (serial, not null, integer), boardID: (not null, integer), name (not null, string)

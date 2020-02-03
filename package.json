@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "migrate:up": "if [ -e .env ]; then . ./.env; fi && sequelize db:migrate --url $DATABASE_URL",
+    "migrate:down": "if [ -e .env ]; then . ./.env; fi && sequelize db:migrate:undo --url $DATABASE_URL"
   },
   "author": "",
   "license": "ISC",
