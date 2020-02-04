@@ -29,8 +29,8 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.User = sequelize.import(__dirname + "/models/User.js")
-db.Task = sequelize.import(__dirname + "/models/Task.js")
-db.Board = sequelize.import(__dirname + "/models/Board.js")
+db.User = sequelize.import(__dirname + "/User.js")
+db.Task = sequelize.import(__dirname + "/Task.js")
+db.Board = sequelize.import(__dirname + "/Board.js")
 
 module.exports = db;

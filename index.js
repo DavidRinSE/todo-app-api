@@ -9,6 +9,7 @@ const openapiSpec = YAML.load("./specification.yaml");
 
 const app = express()
 const port = (process.env.PORT) ?  process.env.PORT : 3000
+const {controller} = require("./controllers")
 
 app.use(bodyParser.json())
 app.use(
@@ -26,9 +27,12 @@ app.get('/api', (req, res) => {
     res.redirect("/docs")
 })
 
-// app.use('/api/table', controllers.table)
-// app.use('/api/task', controllers.task)
-// app.use('/api/auth', controllers.auth)
+app.use('/api/user', controller.user)
+app.use('/api/auth', controller.auth)
+app.use('/api/board', controller.board)
+app.use('/api/boards', controller.boards)
+app.use('/api/task', controller.task)
+app.use('/api/tasks', controller.tasks)
 
 app.get('/', (req, res) => {
     res.redirect("/docs")

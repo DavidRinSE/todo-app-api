@@ -3,7 +3,7 @@ info:
   title: Sproosed API
   version: "1.0.0"
 servers:
-  - url: http://localhost:3000/api
+  - url: http://localhost:3000/
     description: localhost
   - url: https://vast-spire-30392.herokuapp.com/api
     description: Production Server
@@ -149,10 +149,51 @@ components:
           schema:
             type: string
             example: "I'm a teapot"
-paths: 
+paths:
+  /api/user:
+    post:
+      summary: Add a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+                email:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+                password:
+                  type: string
+                  minLength: 3
+                  maxLength: 20
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  statusCode:
+                    type: integer
+                    example: 0
+        400:
+          $ref: '#/components/responses/badRequest'
+        418:
+          $ref: '#/components/responses/teapot'
   /api/auth/login:
     post:
-      summary: Login User
+      summary: Login user
       tags: 
         - Auth
       requestBody:
