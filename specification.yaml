@@ -312,7 +312,7 @@ paths:
           $ref: '#/components/responses/badRequest'
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /api/boards:
+  /api/boards/{username}:
     get:
       tags:
         - Boards
@@ -327,6 +327,10 @@ paths:
           name: shift
           schema:
             type: integer
+        - in: path
+          name: username
+          schema:
+            type: string
       responses:
         200:
           $ref: '#/components/responses/getBoards'
