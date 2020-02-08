@@ -29,8 +29,16 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.User = sequelize.import(__dirname + "/User.js")
-db.Task = sequelize.import(__dirname + "/Task.js")
-db.Board = sequelize.import(__dirname + "/Board.js")
+let User = sequelize.import(__dirname + "/User.js")
+let Task = sequelize.import(__dirname + "/Task.js")
+let Board = sequelize.import(__dirname + "/Board.js")
+
+Board.hasMany(Task, {
+  foreignKey: "boardID"
+})
+
+db.User = User
+db.Task = Task
+db.Board = Board
 
 module.exports = db;
