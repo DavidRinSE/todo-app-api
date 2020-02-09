@@ -280,7 +280,18 @@ paths:
           name: id
           schema:
             type: integer
-          required: true
+        - in: query
+          name: username
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: shift
+          schema:
+            type: integer
       responses:
         200:
           $ref: '#/components/responses/getBoard'
@@ -312,30 +323,30 @@ paths:
           $ref: '#/components/responses/badRequest'
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /api/boards/{username}:
-    get:
-      tags:
-        - Boards
-      summary: Get all boards
-      parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            example: 100
-        - in: query
-          name: shift
-          schema:
-            type: integer
-        - in: path
-          name: username
-          schema:
-            type: string
-      responses:
-        200:
-          $ref: '#/components/responses/getBoards'
-        400:
-          $ref: '#/components/responses/badRequest'
+  # /api/boards/{username}:
+  #   get:
+  #     tags:
+  #       - Boards
+  #     summary: Get all boards
+  #     parameters:
+  #       - in: query
+  #         name: limit
+  #         schema:
+  #           type: integer
+  #           example: 100
+  #       - in: query
+  #         name: shift
+  #         schema:
+  #           type: integer
+  #       - in: path
+  #         name: username
+  #         schema:
+  #           type: string
+  #     responses:
+  #       200:
+  #         $ref: '#/components/responses/getBoards'
+  #       400:
+  #         $ref: '#/components/responses/badRequest'
   /api/task:
     post:
       security:
