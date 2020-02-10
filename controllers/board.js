@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 const db = require("../models");
 const Responses = require("./responses");
 
 const Board = db.Board
+const User = db.User
 const Task = db.Task
 
 router.get("/", async (req, res) => {
@@ -35,10 +37,48 @@ router.get("/", async (req, res) => {
 
 })
 
-router.post("/", (req, res) => {
-    res.json({
-        message: "/api/board post"
+router.post("/", async (req, res) => {
+    let {name, username} = req.body
+    console.log(req.headers)
+    let decoded;
+    try {
+        decoded = jwt.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+        if(decoded.username !== username){
+            return res.status(401).send(req.headers.authorization.replace("Bearer ", ""))
+        }
+    } catch (err) {
+        return res.status(401).send('pop');
+    }
+
+    let user = await User.findAll({where: {username}})
+    if(user.length === 0){
+        return res.status(404).send(JSON.stringify(NotFound("user")))
+    }
+    Board.create({
+        username: username,
+        userID: 14,
+        name: name
     })
+        .then(board => {
+            return res.json({
+                board: {
+                    name: board.get("name"),
+                    id: board.get("id"),
+                    tasks: []
+                },
+                statusCode:200
+            })
+        })
+        .catch(error => {
+            if( error instanceof Sequelize.ValidationError){
+                let messages = error.errors.map((error) => {
+                    return error.message
+                })
+                return res.status(400).send({ errors: messages, statusCode:400 })
+            }
+            console.log(error);
+            res.status(500).send();
+        })
 })
 
 router.patch("/", (req, res) => {
