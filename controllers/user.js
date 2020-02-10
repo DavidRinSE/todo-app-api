@@ -3,17 +3,20 @@ const router = express.Router();
 const db = require("../models")
 const Sequelize = db.Sequelize
 const Responses = require("./responses")
+const bcrypt = require('bcrypt');
+const saltRounds = 10
 
 const User = db.User
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     const { username, password, email } = req.body;
 
-    User.findAll({where: {username}}).then(users => {
-        if (users.length === 0){
+    const userSearch = await User.findAll({where: {username}})
+    if(userSearch.length === 0){
+        bcrypt.hash(password, saltRounds, (err, hash) => {
             User.create({
                 username: username,
-                password: password,
+                password: hash,
                 email: email,
             })
                 .then(user => {
@@ -32,10 +35,11 @@ router.post("/", (req, res) => {
                     console.log(error);
                     res.status(500).send();
                 })
-        } else {
-            res.status(400).send(Responses.AlreadyExists("username"))
-        } 
-    })
+        })
+    }
+    else {
+        res.status(400).send(Responses.AlreadyExists("username"))
+    }
 })
 
 module.exports = router

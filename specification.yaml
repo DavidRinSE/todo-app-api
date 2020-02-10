@@ -230,26 +230,26 @@ paths:
           $ref: '#/components/responses/badRequest'
         418:
           $ref: '#/components/responses/teapot'
-  /api/auth/logout:
-    post:
-      security:
-        - beraerAuth: []
-      summary: Logout a user
-      tags:
-        - Auth
-      responses:
-        200:
-          description: OK
-          content: 
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: integer
-                    example: 0
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
+  # /api/auth/logout:
+  #   post:
+  #     security:
+  #       - beraerAuth: []
+  #     summary: Logout a user
+  #     tags:
+  #       - Auth
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content: 
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 statusCode:
+  #                   type: integer
+  #                   example: 0
+  #       401:
+  #         $ref: '#/components/responses/UnauthorizedError'
   /api/board:
     post:
       security:
@@ -262,8 +262,11 @@ paths:
         content:
           application/json:
             schema:
-              type: string
-              example: "New board name"
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "New board name"
       responses:
         200:
           $ref: '#/components/responses/getBoard'
@@ -383,7 +386,18 @@ paths:
           name: id
           schema:
             type: integer
-          required: true
+        - in: query
+          name: boardID
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: shift
+          schema:
+            type: integer
       responses:
         200:
           $ref: '#/components/responses/getTask'
@@ -421,27 +435,27 @@ paths:
           $ref: '#/components/responses/badRequest'
         401:
           $ref: '#/components/responses/UnauthorizedError'
-  /api/tasks:
-    get:
-      tags:
-        - Tasks
-      summary: Get a list of tasks
-      parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            example: 100
-        - in: query
-          name: shift
-          schema:
-            type: integer
-        - in: query
-          name: boardID
-          schema:
-            type: integer
-      responses:
-        200:
-          $ref: '#/components/responses/getTasks'
-        400:
-          $ref: '#/components/responses/badRequest'
+  # /api/tasks:
+  #   get:
+  #     tags:
+  #       - Tasks
+  #     summary: Get a list of tasks
+  #     parameters:
+  #       - in: query
+  #         name: limit
+  #         schema:
+  #           type: integer
+  #           example: 100
+  #       - in: query
+  #         name: shift
+  #         schema:
+  #           type: integer
+  #       - in: query
+  #         name: boardID
+  #         schema:
+  #           type: integer
+  #     responses:
+  #       200:
+  #         $ref: '#/components/responses/getTasks'
+  #       400:
+  #         $ref: '#/components/responses/badRequest'
