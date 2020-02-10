@@ -230,26 +230,26 @@ paths:
           $ref: '#/components/responses/badRequest'
         418:
           $ref: '#/components/responses/teapot'
-  /api/auth/logout:
-    post:
-      security:
-        - beraerAuth: []
-      summary: Logout a user
-      tags:
-        - Auth
-      responses:
-        200:
-          description: OK
-          content: 
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: integer
-                    example: 0
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
+  # /api/auth/logout:
+  #   post:
+  #     security:
+  #       - beraerAuth: []
+  #     summary: Logout a user
+  #     tags:
+  #       - Auth
+  #     responses:
+  #       200:
+  #         description: OK
+  #         content: 
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 statusCode:
+  #                   type: integer
+  #                   example: 0
+  #       401:
+  #         $ref: '#/components/responses/UnauthorizedError'
   /api/board:
     post:
       security:
@@ -262,8 +262,11 @@ paths:
         content:
           application/json:
             schema:
-              type: string
-              example: "New board name"
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "New board name"
       responses:
         200:
           $ref: '#/components/responses/getBoard'
