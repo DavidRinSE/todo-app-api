@@ -267,6 +267,8 @@ paths:
                 name:
                   type: string
                   example: "New board name"
+                username:
+                  type: string
       responses:
         200:
           $ref: '#/components/responses/getBoard'
