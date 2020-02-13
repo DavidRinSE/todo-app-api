@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
 const db = require("../models");
 const Responses = require("./responses");
+const testToken = require("./testToken")
 
 const Board = db.Board
 const User = db.User
@@ -39,21 +39,12 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
     let {name, username} = req.body
-    console.log(req.headers)
-    let decoded;
-    try {
-        decoded = jwt.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
-        if(decoded.username !== username){
-            return res.status(401).send(req.headers.authorization.replace("Bearer ", ""))
-        }
-    } catch (err) {
-        return res.status(401).send('pop');
-    }
 
-    let user = await User.findAll({where: {username}})
-    if(user.length === 0){
-        return res.status(404).send(JSON.stringify(NotFound("user")))
+    console.log(testToken)
+    if(!testToken(req.headers.authorization, username)){
+        return res.status(400).send("Bad token or username")
     }
+    
     Board.create({
         username: username,
         userID: 14,
@@ -81,10 +72,47 @@ router.post("/", async (req, res) => {
         })
 })
 
-router.patch("/", (req, res) => {
-    res.json({
-        message: "/api/board patch"
-    })
+router.patch("/", async (req, res) => {
+    let {name, username} = req.body
+    let {id} = req.query
+
+    if(!testToken(req.headers.authorization, username)){
+        return res.status(400).send("Bad token or username")
+    }
+
+    let result = await Board.update(
+        {name: name},
+        {where: {id}}
+    )
+    if(result[0] === 1){
+        res.send({message:"success", statusCode:200})
+    } else {
+        res.status(404).send(Responses.NotFound("board"))
+    }
+
+    
+})
+
+router.delete("/", async (req, res) => {
+    let {username} = req.body
+    let {id} = req.query
+
+    if(!testToken(req.headers.authorization, username)){
+        return res.status(400).send("Bad token or username")
+    }
+
+    board = await Board.findAll({where: {id}})
+    if(board.length > 0){
+        Board.destroy({
+            where: {id}
+        }).then(() => {
+            res.send({message:"success",statusCode:200})
+        })
+    } else {
+        res.status(404).send(Responses.NotFound("board"))
+    }
+
+    
 })
 
 module.exports = router
