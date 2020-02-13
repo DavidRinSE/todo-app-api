@@ -319,11 +319,55 @@ paths:
         content:
           application/json:
             schema:
-              type: string
-              example: "New board name"
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "New board name"
+                username:
+                  type: string
       responses:
         200:
           $ref: '#/components/responses/getBoard'
+        400:
+          $ref: '#/components/responses/badRequest'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      security:
+        - beraerAuth: []
+      tags:
+        - Boards
+      summary: Delete a specific board name
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "success"
+                  statusCode:
+                    type: integer
+                    example: 200
         400:
           $ref: '#/components/responses/badRequest'
         401:
