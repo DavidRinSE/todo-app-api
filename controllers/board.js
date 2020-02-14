@@ -5,7 +5,6 @@ const Responses = require("./responses");
 const testToken = require("./testToken")
 
 const Board = db.Board
-const User = db.User
 const Task = db.Task
 
 router.get("/", async (req, res) => {
@@ -25,7 +24,7 @@ router.get("/", async (req, res) => {
 
     let boards = await Board.findAll({
         where,
-        include: [Task],
+        include: [{model:Task, as:"tasks"}],
         limit: req.query.limit || 100,
         offset: req.query.offset || 0,
         order: [["createdAt", "DESC"]],
