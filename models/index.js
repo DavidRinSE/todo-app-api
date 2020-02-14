@@ -34,7 +34,8 @@ let Task = sequelize.import(__dirname + "/Task.js")
 let Board = sequelize.import(__dirname + "/Board.js")
 
 Board.hasMany(Task, {
-  foreignKey: "boardID"
+  foreignKey: "boardID",
+  as:"tasks"
 })
 
 db.User = User

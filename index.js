@@ -30,9 +30,7 @@ app.get('/api', (req, res) => {
 app.use('/api/user', controller.user)
 app.use('/api/auth', controller.auth)
 app.use('/api/board', controller.board)
-// app.use('/api/boards', controller.boards)
 app.use('/api/task', controller.task)
-app.use('/api/tasks', controller.tasks)
 
 app.get('/', (req, res) => {
     res.redirect("/docs")
