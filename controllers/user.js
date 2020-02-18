@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models")
 const Sequelize = db.Sequelize
-const Responses = require("./responses")
 const bcrypt = require('bcrypt');
 const saltRounds = 10
 
@@ -38,7 +37,7 @@ router.post("/", async (req, res) => {
         })
     }
     else {
-        res.status(400).send(Responses.AlreadyExists("username"))
+        res.status(400).send({message:"That username already exists", statusCode:400})
     }
 })
 
