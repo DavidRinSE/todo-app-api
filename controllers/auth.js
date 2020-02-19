@@ -3,19 +3,17 @@ const router = express.Router();
 const db = require("../models")
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Responses = require("./responses");
 
 const User = db.User
 
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
-        return res.status(400).send(JSON.stringify(Responses.BadRequest("username or password", "string")))
+        return res.status(400).send({message:"Request body missing username or password", statusCode:400})
     }
     let user = await User.findOne({where: {username}})
     if (!user){
-        //bad username
-        return res.status(404).send(JSON.stringify(Responses.NotFound("user")))
+        return res.status(404).send({message:"No user with that username found", statusCode:404})
     } else {
         bcrypt.compare(password, user.password, (err, result) => {
             if (result){
@@ -29,7 +27,7 @@ router.post("/login", async (req, res) => {
                     statusCode: res.statusCode
                 });
             } else {
-                res.status(400).send("Incorrect password")
+                res.status(400).send({message:"Incorrect password", statusCode:401})
             }
         })
     }

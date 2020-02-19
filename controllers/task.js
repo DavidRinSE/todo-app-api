@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../models");
 const Sequelize = db.Sequelize
-const Responses = require("./responses");
 const testToken = require("./testToken")
 
 const Task = db.Task
@@ -19,7 +18,7 @@ router.get("/", async (req, res) => {
             id: parseInt(req.query.id)
         }
     } else {
-        return res.status(400).send(JSON.stringify(Responses.BadRequest("username or id", "string or number")))
+        return res.status(400).send({message:"Request query missing username (string) or id (number)", statusCode:400})
     }
 
     let tasks = await Task.findAll({
@@ -29,7 +28,7 @@ router.get("/", async (req, res) => {
         order: [["createdAt", "DESC"]],
     })
     if (tasks.length < 1){
-        return res.status(404).send(JSON.stringify(Responses.NotFound("task")))
+        return res.status(404).send({message:"No task found with that id or BoardID", statusCode:404})
     }
     return res.json({tasks: tasks, statusCode:200})
 
@@ -37,9 +36,10 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
     let {name, username, boardID} = req.body
-    console.log(name)
-    if(!testToken(req.headers.authorization, username)){
-        return res.status(400).send("Bad token or username")
+    
+    let tokenDoesPass = await testToken(req.headers.authorization, username)
+    if(!tokenDoesPass){
+        return res.status(400).send({message:"Bad token or missing username", statusCode:404})
     }
     
     Task.create({
@@ -78,8 +78,9 @@ router.patch("/", async (req, res) => {
     const username = req.body.username
     const {id} = req.query
 
-    if(!testToken(req.headers.authorization, username)){
-        return res.status(400).send("Bad token or username")
+    let tokenDoesPass = await testToken(req.headers.authorization, username)
+    if(!tokenDoesPass){
+        return res.status(400).send({message:"Bad token or missing username", statusCode:404})
     }
 
     let result = await Task.update(
@@ -89,7 +90,7 @@ router.patch("/", async (req, res) => {
     if(result[0] === 1){
         res.send({message:"success", statusCode:200})
     } else {
-        res.status(404).send(Responses.NotFound("task"))
+        res.status(404).send({message:"No task found with that id", statusCode:404})
     }
 
     
@@ -99,8 +100,9 @@ router.delete("/", async (req, res) => {
     let {username} = req.body
     let {id} = req.query
 
-    if(!testToken(req.headers.authorization, username)){
-        return res.status(400).send("Bad token or username")
+    let tokenDoesPass = await testToken(req.headers.authorization, username)
+    if(!tokenDoesPass){
+        return res.status(400).send({message:"Bad token or missing username", statusCode:404})
     }
 
     task = await Task.findAll({where: {id}})
@@ -111,7 +113,7 @@ router.delete("/", async (req, res) => {
             res.send({message:"success",statusCode:200})
         })
     } else {
-        res.status(404).send(Responses.NotFound("task"))
+        res.status(404).send({message:"No task found with that id", statusCode:404})
     }
 
     
