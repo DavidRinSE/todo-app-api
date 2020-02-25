@@ -149,6 +149,8 @@ components:
           schema:
             type: string
             example: "I'm a teapot"
+security:
+  - bearerAuth: []
 paths:
   /api/user:
     post:
