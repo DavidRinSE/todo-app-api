@@ -5,7 +5,7 @@ info:
 servers:
   - url: http://localhost:3000/
     description: localhost
-  - url: https://vast-spire-30392.herokuapp.com/api
+  - url: https://powerful-meadow-14293.herokuapp.com/api
     description: Production Server
     variables:
       domain:
