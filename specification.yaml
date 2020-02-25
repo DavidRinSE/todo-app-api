@@ -234,8 +234,6 @@ paths:
           $ref: '#/components/responses/teapot'
   # /api/auth/logout:
   #   post:
-  #     security:
-  #       - beraerAuth: []
   #     summary: Logout a user
   #     tags:
   #       - Auth
@@ -254,8 +252,6 @@ paths:
   #         $ref: '#/components/responses/UnauthorizedError'
   /api/board:
     post:
-      security:
-        - beraerAuth: []
       summary: Create a new board
       tags:
         - Boards
@@ -305,8 +301,6 @@ paths:
         400:
           $ref: '#/components/responses/badRequest'
     patch:
-      security:
-        - beraerAuth: []
       tags:
         - Boards
       summary: Update a specific board name
@@ -336,8 +330,6 @@ paths:
         401:
           $ref: '#/components/responses/UnauthorizedError'
     delete:
-      security:
-        - beraerAuth: []
       tags:
         - Boards
       summary: Delete a specific board name
@@ -400,8 +392,6 @@ paths:
   #         $ref: '#/components/responses/badRequest'
   /api/task:
     post:
-      security:
-        - beraerAuth: []
       summary: Create a new task
       tags:
         - Tasks
@@ -452,8 +442,6 @@ paths:
         400:
           $ref: '#/components/responses/badRequest'
     patch:
-      security:
-        - beraerAuth: []
       tags:
         - Tasks
       summary: Update a specific task
