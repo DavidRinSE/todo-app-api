@@ -5,7 +5,7 @@ info:
 servers:
   - url: http://localhost:3000/
     description: localhost
-  - url: https://powerful-meadow-14293.herokuapp.com/api
+  - url: https://powerful-meadow-14293.herokuapp.com
     description: Production Server
     variables:
       domain:
